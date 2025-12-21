@@ -1,0 +1,13 @@
+.DS_Store
+.build/
+.env*
+.lock
+auto
+binary*
+build.log
+cache
+chroot*
+config/
+live-image*
+local/
+wget-log*
