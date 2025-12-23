@@ -4,7 +4,7 @@ all: ectde-image-amd64.hybrid.iso
 
 config:
 	lb config \
-		--archive-areas 'main non-free-firmware' \
+		--archive-areas 'main non-free-firmware contrib' \
 		--backports true \
 		--debian-installer live \
 		--debian-installer-distribution trixie \
@@ -55,6 +55,29 @@ config/apt/preferences: config
 	EOF
 
 .ONESHELL:
+config/hooks/normal/6100-install-emcomm-tools.hook.chroot: config
+	cat <<EOF >$@
+	#!/bin/sh
+	
+	set -e
+	
+	apt-get install -y \\
+	       tar \\
+	       curl \\
+	
+	curl -sL https://github.com/corvus-ch/emcomm-tools-os-community/archive/refs/heads/debian-edition.tar.gz \\
+		| tar -x --gunzip --directory /tmp
+	
+	cd /tmp/emcomm-tools-os-community-debian-edition/scripts
+	
+	./install.sh
+	
+	cd
+	rm -rf /tmp/emcomm-tools-os-community-debian-edition
+	EOF
+	chmod +x $@
+
+.ONESHELL:
 config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot: config
 	cat <<EOF >$@
 	#!/bin/sh
@@ -70,6 +93,7 @@ config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot: config
 	chmod +x $@
 
 apt: config/apt/preferences
+hooks: config/hooks/normal/6100-install-emcomm-tools.hook.chroot
 hooks: config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot
 packages: config/package-lists/desktop.list.chroot
 
