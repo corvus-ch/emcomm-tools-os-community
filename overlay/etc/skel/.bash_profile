@@ -3,7 +3,7 @@
 # Updated     : 18 March 2025
 # Description : bash profile
 
-# All user accounts should be in the 'et-data' group to allow data sharing with
+# All user accounts should be in the 'users' group to allow data sharing with
 # EmComm Tools. A umask of 002 is required to allow users and the system to
 # read and write shared data files.
 umask 002

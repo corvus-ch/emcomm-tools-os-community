@@ -6,7 +6,7 @@
 # Purpose : Global environment variables
 
 export ET_HOME=/opt/emcomm-tools
-export ET_GROUP=et-data
+export ET_GROUP=users
 export ET_TEMP_DIR=/tmp/et
 export ET_LOG_FILE=$ET_TEMP_DIR/et.log
 
