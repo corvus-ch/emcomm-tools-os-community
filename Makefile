@@ -92,6 +92,9 @@ config/hooks/normal/6100-install-emcomm-tools.hook.chroot: | config
 
 	cd /tmp/source/scripts
 	./install.sh
+	
+	cd /tmp/source/tests
+	./run-test-suite.sh
 	EOF
 	chmod +x $@
 
