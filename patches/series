@@ -9,3 +9,4 @@ package-names.patch
 live-build.patch
 no-extra-browsers.patch
 mbutil.patch
+branding.patch

@@ -1,0 +1,33 @@
+Disable branding
+
+This project is not endoresd by The Tech Prepper.
+Disable branding should reduce the risk for confusion and false expectations.
+Index: emcomm-tools-os-community/source/overlay/usr/share/glib-2.0/schemas/90_ubuntu-settings.gschema.override
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/usr/share/glib-2.0/schemas/90_ubuntu-settings.gschema.override
++++ emcomm-tools-os-community/source/overlay/usr/share/glib-2.0/schemas/90_ubuntu-settings.gschema.override
+@@ -5,12 +5,8 @@ first-run = false
+ no-show-notifications = true
+ 
+ [org.gnome.desktop.background]
+-picture-uri = 'file:///usr/share/backgrounds/emcomm-tools-wallpaper.png'
+ show-desktop-icons = false
+ 
+-[org.gnome.desktop.screensaver]
+-picture-uri = 'file:///usr/share/backgrounds/emcomm-tools-wallpaper.png'
+-
+ [org.gnome.shell]
+ favorite-apps = ['emcomm-tools.desktop', 'js8call.desktop', 'fldigi.desktop', 'et-predict-app.desktop', 'et-aircraft.desktop', 'org.gnome.Terminal.desktop', 'navit.desktop', 'min.desktop', 'org.gnome.Nautilus.desktop']
+ last-selected-power-profile = 'performance'
+Index: emcomm-tools-os-community/source/scripts/install.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install.sh
++++ emcomm-tools-os-community/source/scripts/install.sh
+@@ -16,7 +16,6 @@ exitIfNotRoot
+ ./install-dev-tools.sh
+ ./install-pup.sh
+ ./remove-packages.sh
+-./install-branding.sh
+ 
+ ./configure-gnome.sh
+ ./configure-user.sh
