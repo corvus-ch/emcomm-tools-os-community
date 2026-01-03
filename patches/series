@@ -5,3 +5,7 @@ default-browser.patch
 
 # Fixes
 apt-sources.patch
+package-names.patch
+live-build.patch
+no-extra-browsers.patch
+mbutil.patch

@@ -1,0 +1,54 @@
+Fix package names
+
+Rename all packages having different names on Debian.
+
+Special case zimwriterfs:
+
+The Binary `zimwriterfs` is part of the `zim-tools` package.
+Index: emcomm-tools-os-community/source/scripts/install-base.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-base.sh
++++ emcomm-tools-os-community/source/scripts/install-base.sh
+@@ -22,7 +22,7 @@ apt install \
+   imagemagick \
+   jq \
+   net-tools \
+-  openjdk-20-jdk \
++  default-jdk \
+   openssh-server \
+   screen \
+   socat \
+Index: emcomm-tools-os-community/source/scripts/install-conky.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-conky.sh
++++ emcomm-tools-os-community/source/scripts/install-conky.sh
+@@ -7,5 +7,5 @@ set -e
+ 
+ et-log "Installing Conky..."
+ apt install \
+-  conky\
++  conky-all \
+   -y
+Index: emcomm-tools-os-community/source/scripts/install-navit.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-navit.sh
++++ emcomm-tools-os-community/source/scripts/install-navit.sh
+@@ -16,7 +16,7 @@ apt install \
+   navit-gui-gtk \
+   navit-graphics-gtk-drawing-area \
+   navit-gui-internal \
+-  libcanberra-gtk-dev \
++  libcanberra-gtk3-dev \
+   maptool \
+   espeak \
+   osmium-tool \
+Index: emcomm-tools-os-community/source/scripts/install-wikipedia.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-wikipedia.sh
++++ emcomm-tools-os-community/source/scripts/install-wikipedia.sh
+@@ -12,5 +12,4 @@ apt install \
+   kiwix-tools \
+   zim \
+   zim-tools \
+-  zimwriterfs \
+   -y
