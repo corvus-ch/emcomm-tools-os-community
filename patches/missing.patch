@@ -1,0 +1,15 @@
+Install missing packages
+
+* libnotify-bin providing `notify-send` used by `et-*` scripts.
+Index: emcomm-tools-os-community/source/scripts/install-base.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-base.sh
++++ emcomm-tools-os-community/source/scripts/install-base.sh
+@@ -22,6 +22,7 @@ apt install \
+   gpg \
+   imagemagick \
+   jq \
++  libnotify-bin \
+   net-tools \
+   default-jdk \
+   openssh-server \

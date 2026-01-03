@@ -9,6 +9,7 @@ group.patch
 # Fixes
 apt-sources.patch
 package-names.patch
+missing.patch
 live-build.patch
 no-extra-browsers.patch
 mbutil.patch
