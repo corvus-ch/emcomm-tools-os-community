@@ -1,0 +1,33 @@
+Do not breake PATH semantics
+
+The prefered way to tweak thinks like `PATH`, is by using scripts in `/etc/`profile.d`.
+Including $PATH while adding our own, allows other tools to add to PATH without them breaking.
+
+This patch has been proposed upstream: https://github.com/thetechprepper/emcomm-tools-os-community/pull/81.
+Index: emcomm-tools-os-community/source/overlay/etc/environment
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/etc/environment
++++ emcomm-tools-os-community/source/overlay/etc/environment
+@@ -4,4 +4,3 @@ ET_TEMP_DIR=/tmp/et
+ ET_LOG_FILE=$ET_TEMP_DIR/et.log
+ ET_DIST_DIR=/opt/dist
+ ET_SRC_DIR=/opt/src
+-PATH="/opt/emcomm-tools/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin"
+Index: emcomm-tools-os-community/source/overlay/etc/profile.d/emcomm-tools.sh
+===================================================================
+--- /dev/null
++++ emcomm-tools-os-community/source/overlay/etc/profile.d/emcomm-tools.sh
+@@ -0,0 +1 @@
++export PATH=/opt/emcomm-tools/bin:$PATH
+Index: emcomm-tools-os-community/source/scripts/install-base.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-base.sh
++++ emcomm-tools-os-community/source/scripts/install-base.sh
+@@ -8,6 +8,7 @@ set -e
+ 
+ et-log "Installing environment variables..."
+ cp -v ../overlay/etc/environment /etc/
++cp -v ../overlay/etc/profile.d/emcomm-tools.sh /etc/profile.d/
+ 
+ et-log "Installing message of the day..."
+ cp -v ../overlay/etc/motd /etc/

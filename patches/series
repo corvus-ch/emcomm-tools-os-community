@@ -1,1 +1,7 @@
+# Proposed upstream
+recover-missing-dir.patch
+path.patch
+default-browser.patch
+
+# Fixes
 apt-sources.patch
