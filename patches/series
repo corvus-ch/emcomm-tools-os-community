@@ -12,6 +12,7 @@ dist-dir.patch
 package-names.patch
 missing.patch
 live-build.patch
+https.patch
 no-extra-browsers.patch
 mbutil.patch
 branding.patch

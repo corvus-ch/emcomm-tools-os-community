@@ -1,0 +1,60 @@
+Always use HTTPS
+
+For some reason, HTTP requests fail within live-builds chroot environment.
+Index: emcomm-tools-os-community/source/scripts/download-osm-maps.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/download-osm-maps.sh
++++ emcomm-tools-os-community/source/scripts/download-osm-maps.sh
+@@ -5,7 +5,7 @@
+ # Purpose  : Downloads OSM .pbf file selected by user
+ 
+ HTML=page.html
+-URL=http://download.geofabrik.de/north-america/us.html
++URL=https://download.geofabrik.de/north-america/us.html
+ 
+ # Location to store OSM .bpf files
+ PBF_MAP_DIR=/etc/skel/my-maps
+@@ -27,7 +27,7 @@ et-log "Extracting state-level .pbf file
+ options=()
+ while IFS= read -r state_html; do
+     state_file=$(echo $state_html | sed -n 's|.*href="\([^"]*\.osm\.pbf\)".*|\1|p')
+-    state_url="http://download.geofabrik.de/north-america/${state_file}"
++    state_url="https://download.geofabrik.de/north-america/${state_file}"
+ 
+     # Extract a display friendly name for the state
+     state_name=$(echo $state_file | sed 's|us/||' | sed 's|-latest.osm.pbf||')
+@@ -42,7 +42,7 @@ tput sgr 0 && clear
+ 
+ if [ $exit_status -eq 0 ]; then
+   download_file="${SELECTED_STATE}-latest.osm.pbf"
+-  download_url="http://download.geofabrik.de/north-america/us/${download_file}"
++  download_url="https://download.geofabrik.de/north-america/us/${download_file}"
+ 
+   if [ -e ${download_file} ]; then
+     et-log "${download_file} already exists. Skipping download."
+Index: emcomm-tools-os-community/source/scripts/install-bbs-server.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-bbs-server.sh
++++ emcomm-tools-os-community/source/scripts/install-bbs-server.sh
+@@ -28,7 +28,7 @@ et-log "Installing Linbpq..."
+ 
+ # Install the web interface for LinBPQ
+ HTML_ZIP_FILE=HTMLPages.zip
+-HTML_ZIP_URL="http://www.cantab.net/users/john.wiseman/Downloads/Beta/${HTML_ZIP_FILE}"
++HTML_ZIP_URL="https://www.cantab.net/users/john.wiseman/Downloads/Beta/${HTML_ZIP_FILE}"
+ BBS_HOME="/etc/skel/.local/share/emcomm-tools/bbs-server"
+ BBS_HOME_FILES="${BBS_HOME}/Files"
+ 
+Index: emcomm-tools-os-community/source/scripts/install-qttermtcp.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-qttermtcp.sh
++++ emcomm-tools-os-community/source/scripts/install-qttermtcp.sh
+@@ -34,7 +34,7 @@ apt install \
+ 
+ if [ ! -e ${ET_DIST_DIR}/${DOWNLOAD_FILE} ]; then
+ 
+-  URL=http://www.cantab.net/users/john.wiseman/Downloads/${DOWNLOAD_FILE}
++  URL=https://www.cantab.net/users/john.wiseman/Downloads/${DOWNLOAD_FILE}
+ 
+   et-log "Downloading QtTermTCP: ${URL}"
+   curl -s -L -o ${DOWNLOAD_FILE} --fail ${URL}
