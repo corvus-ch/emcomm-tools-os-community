@@ -40,7 +40,7 @@ allows you to tailor it to your own needs.
 ### Build prerequisites
 
 * Working instance of Debian Stable
-* The packages `make` and `live-build` installed
+* The packages `make`, `quilt`, and `live-build` installed
 * A copy of this repository
 
 ### Building
