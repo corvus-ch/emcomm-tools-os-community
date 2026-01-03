@@ -2,6 +2,7 @@
 .build/
 .env*
 .lock
+/overrides/
 auto
 binary*
 build.log

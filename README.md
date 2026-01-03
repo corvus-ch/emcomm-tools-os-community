@@ -50,3 +50,23 @@ From within the top folder, run:
 ```sh
 make
 ```
+
+### Customize your build
+
+The ISO images are built using [live-build](https://live-team.pages.debian.net/live-manual/).
+Alter the generated configuration by placing files in the `overrides` directory.
+The inner structure `overrides` is the same as that of `config`.
+
+Add additional packages:
+
+```sh
+mkdir -p overrides/package-lists
+echo 'chirp' > overrides/package-lists/custom.list.chroot
+```
+
+Add VARA from backup created on an install of EmComm Tools:
+
+```sh
+mkdir -p overrides/includes.chroot_after_packages/etc/skel
+tar x -C overrides/includes.chroot_after_packages/etc/skel -f etc-wine-backup*.tar.gz
+```

@@ -12,6 +12,11 @@ prepare: config/hooks/normal/6100-install-emcomm-tools.hook.chroot
 prepare: config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot
 prepare: config/package-lists/desktop.list.chroot
 
+ifneq (,$(wildcard overrides))
+prepare: overrides | config
+	cp -RT $< config
+endif
+
 config:
 	lb config \
 		--archive-areas 'main non-free-firmware contrib' \
