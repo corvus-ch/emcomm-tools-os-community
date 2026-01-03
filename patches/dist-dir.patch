@@ -1,0 +1,15 @@
+Ensure dist directory exists
+
+Prevent assets from being copied to `/opt/dist` instead `/opt/dist/<asset>`.
+Index: emcomm-tools-os-community/source/scripts/bootstrap.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/bootstrap.sh
++++ emcomm-tools-os-community/source/scripts/bootstrap.sh
+@@ -5,6 +5,7 @@
+ # Purpose : Minimal bootstrap script for the installer
+ 
+ [ ! -d $ET_HOME/bin ] && mkdir -v -p $ET_HOME/bin
++[ ! -d $ET_DIST_DIR ] && mkdir -v -p $ET_DIST_DIR
+ 
+ cp -v ../overlay/$ET_HOME/bin/et-log $ET_HOME/bin/
+ [ ! -e /usr/local/bin/et-log ] && ln -v -s $ET_HOME/bin/et-log /usr/local/bin/et-log
