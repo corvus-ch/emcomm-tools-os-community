@@ -2,6 +2,7 @@
 .build/
 .env*
 .lock
+.pc/
 /emcomm-tools-os-community-*.tar.gz
 /overrides/
 /source/

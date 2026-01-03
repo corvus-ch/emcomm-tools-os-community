@@ -1,0 +1,15 @@
+Leave apt sources intact
+
+Using Debian, does no longer require manipulation of the apt sources.
+Index: emcomm-tools-os-community/source/scripts/install.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install.sh
++++ emcomm-tools-os-community/source/scripts/install.sh
+@@ -11,7 +11,6 @@
+ exitIfNotRoot
+ 
+ ./bootstrap.sh
+-./update-apt.sh
+ 
+ ./install-base.sh
+ ./install-dev-tools.sh

@@ -25,6 +25,7 @@ emcomm-tools-os-community-$(UPSTREAM_VERSION).tar.gz:
 source: emcomm-tools-os-community-$(UPSTREAM_VERSION).tar.gz
 	mkdir $@
 	tar -C $@ --strip-components 1 -x -f $<
+	quilt push -a
 
 config/includes.chroot_before_packages/tmp/source: source | config
 	mkdir -p $@
@@ -114,6 +115,7 @@ clean:
 	sudo rm -rf \
 		.build/ \
 		.lock \
+		.pc \
 		auto/ \
 		binary* \
 		build.log \
