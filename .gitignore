@@ -2,7 +2,9 @@
 .build/
 .env*
 .lock
+/emcomm-tools-os-community-*.tar.gz
 /overrides/
+/source/
 auto
 binary*
 build.log

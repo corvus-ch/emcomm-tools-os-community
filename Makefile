@@ -1,4 +1,5 @@
 ET_LB_EXTRA_OPTS ?= ''
+UPSTREAM_VERSION ?= 20251128-r5-final-5.0.0
 
 all: ectde-image-amd64.hybrid.iso
 
@@ -10,12 +11,24 @@ prepare: config
 prepare: config/apt/preferences
 prepare: config/hooks/normal/6100-install-emcomm-tools.hook.chroot
 prepare: config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot
+prepare: config/includes.chroot_before_packages/tmp/source
 prepare: config/package-lists/desktop.list.chroot
 
 ifneq (,$(wildcard overrides))
 prepare: overrides | config
 	cp -RT $< config
 endif
+
+emcomm-tools-os-community-$(UPSTREAM_VERSION).tar.gz:
+	curl --location --output $@ https://github.com/thetechprepper/emcomm-tools-os-community/archive/refs/tags/emcomm-tools-os-community-$(UPSTREAM_VERSION).tar.gz
+
+source: emcomm-tools-os-community-$(UPSTREAM_VERSION).tar.gz
+	mkdir $@
+	tar -C $@ --strip-components 1 -x -f $<
+
+config/includes.chroot_before_packages/tmp/source: source | config
+	mkdir -p $@
+	cp -RT $< $@
 
 config:
 	lb config \
@@ -73,22 +86,11 @@ config/apt/preferences: | config
 config/hooks/normal/6100-install-emcomm-tools.hook.chroot: | config
 	cat <<EOF >$@
 	#!/bin/sh
-	
+
 	set -e
-	
-	apt-get install -y \\
-	       tar \\
-	       curl \\
-	
-	curl -sL https://github.com/corvus-ch/emcomm-tools-os-community/archive/refs/heads/debian-edition.tar.gz \\
-		| tar -x --gunzip --directory /tmp
-	
-	cd /tmp/emcomm-tools-os-community-debian-edition/scripts
-	
+
+	cd /tmp/source/scripts
 	./install.sh
-	
-	cd
-	rm -rf /tmp/emcomm-tools-os-community-debian-edition
 	EOF
 	chmod +x $@
 
@@ -120,4 +122,5 @@ clean:
 		config/ \
 		live-image* \
 		local/ \
+		source/ \
 		wget-log* \
