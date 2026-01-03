@@ -1,0 +1,73 @@
+Reduces changes to user groups
+
+* Use the system default `users` group insted of `et-data`.
+* Use sed to alter `/etc/adduser.conf` in place instead of completly replace it.
+
+TODO: Move active radio link to a user owned directory and drop messing with groups at all.
+Index: emcomm-tools-os-community/source/overlay/etc/environment
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/etc/environment
++++ emcomm-tools-os-community/source/overlay/etc/environment
+@@ -1,5 +1,5 @@
+ ET_HOME=/opt/emcomm-tools
+-ET_GROUP=et-data
++ET_GROUP=users
+ ET_TEMP_DIR=/tmp/et
+ ET_LOG_FILE=$ET_TEMP_DIR/et.log
+ ET_DIST_DIR=/opt/dist
+Index: emcomm-tools-os-community/source/overlay/etc/skel/.bash_profile
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/etc/skel/.bash_profile
++++ emcomm-tools-os-community/source/overlay/etc/skel/.bash_profile
+@@ -3,7 +3,7 @@
+ # Updated     : 18 March 2025
+ # Description : bash profile
+ 
+-# All user accounts should be in the 'et-data' group to allow data sharing with
++# All user accounts should be in the 'users' group to allow data sharing with
+ # EmComm Tools. A umask of 002 is required to allow users and the system to
+ # read and write shared data files.
+ umask 002
+Index: emcomm-tools-os-community/source/scripts/configure-user.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/configure-user.sh
++++ emcomm-tools-os-community/source/scripts/configure-user.sh
+@@ -6,16 +6,18 @@
+ # Purpose : Configure users and groups
+ set -e
+ 
+-ET_GID=1981
+-
+-et-log "Adding '${ET_GROUP}' group..."
+-groupadd -g ${ET_GID} ${ET_GROUP} 
+-
+ et-log "Configuring users..."
+ 
+ cp -r ../overlay/etc/skel /etc/
+ [ ! -e /etc/skel/Desktop ] && mkdir /etc/skel/Desktop
+ 
+ et-log "Add all users to dialout group..."
+-cp -v -r ../overlay/etc/adduser.conf /etc/
+-
++sed \
++  -i \
++  -e 's/^#\?ADD_EXTRA_GROUPS=.*/ADD_EXTRA_GROUPS=1/' \
++  -e 's/^#\?EXTRA_GROUPS=.*/EXTRA_GROUPS="audio bluetooth cdrom dialout floppy plugdev tty users video"/' \
++  /etc/adduser.conf
++
++et-log "Force installer adding user to the desired groups..."
++# The Calamares installer uses its own confiuration instead of using what is configured in `/etc/adduser.conf`.
++sed -i '/defaultGroups:/a\    - users\n    - dialout\n    - tty' /etc/calamares/modules/users.conf
+Index: emcomm-tools-os-community/source/scripts/env.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/env.sh
++++ emcomm-tools-os-community/source/scripts/env.sh
+@@ -6,7 +6,7 @@
+ # Purpose : Global environment variables
+ 
+ export ET_HOME=/opt/emcomm-tools
+-export ET_GROUP=et-data
++export ET_GROUP=users
+ export ET_TEMP_DIR=/tmp/et
+ export ET_LOG_FILE=$ET_TEMP_DIR/et.log
+ 

@@ -1,0 +1,25 @@
+# Proposed upstream
+recover-missing-dir.patch
+path.patch
+default-browser.patch
+
+# Pending upstream
+group.patch
+
+# Fixes
+apt-sources.patch
+package-names.patch
+live-build.patch
+no-extra-browsers.patch
+mbutil.patch
+branding.patch
+
+# Improvements/clean-ups
+panasonic.patch
+pup.patch
+hamlib.patch
+js8call.patch
+direwolf.patch
+pat.patch
+rtl-sdr.patch
+fldigi.patch

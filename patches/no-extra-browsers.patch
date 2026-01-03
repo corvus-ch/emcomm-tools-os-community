@@ -1,0 +1,15 @@
+Ommit installing additional browsers
+
+Stick to Gnomes default (Epiphany) for consistency (visual appearance) and simplicity.
+Index: emcomm-tools-os-community/source/scripts/install.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install.sh
++++ emcomm-tools-os-community/source/scripts/install.sh
+@@ -15,7 +15,6 @@ exitIfNotRoot
+ ./install-base.sh
+ ./install-dev-tools.sh
+ ./install-pup.sh
+-./install-browser.sh
+ ./remove-packages.sh
+ ./install-branding.sh
+ 

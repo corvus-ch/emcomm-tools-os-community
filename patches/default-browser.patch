@@ -1,0 +1,91 @@
+Adhere to default browser
+
+Use `xdg-open` to open URLs in the default browser configured by the user.
+
+This patch has been submitted upstream: https://github.com/thetechprepper/emcomm-tools-os-community/pull/82.
+Index: emcomm-tools-os-community/source/overlay/etc/skel/add-ons/docs/create-doc-site.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/etc/skel/add-ons/docs/create-doc-site.sh
++++ emcomm-tools-os-community/source/overlay/etc/skel/add-ons/docs/create-doc-site.sh
+@@ -22,4 +22,4 @@ gem install jekyll bundler && jekyll new
+ 
+ echo -e "${YELLOW}1. Move into the site directory: ${WHITE}cd ${SITE}${NC}"
+ echo -e "${YELLOW}2. Build and start site: ${WHITE}bundle exec jekyll serve${NC}" 
+-echo -e "${YELLOW}3. Access site in web browser: ${WHITE}min http://localhost:4000${NC}" 
++echo -e "${YELLOW}3. Access site in web browser: ${WHITE}xdg-open http://localhost:4000${NC}"
+Index: emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-mode
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/opt/emcomm-tools/bin/et-mode
++++ emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-mode
+@@ -240,12 +240,12 @@ if [ $exit_status -eq 0 ]; then
+       et-log "Using ARDOP as the modem."
+       start_and_wait_for_service et-service-ardop
+       start_and_wait_for_service et-service-winlink-ardop
+-      min http://localhost:8080
++      xdg-open http://localhost:8080
+     ;;
+     ${MODE_ID_WINLINK_PACKET})
+       start_and_wait_for_service et-service-direwolf-simple 
+       start_and_wait_for_service et-service-winlink-packet
+-      min http://localhost:8080
++      xdg-open http://localhost:8080
+     ;;
+     ${MODE_ID_WINLINK_VARA_FM})
+       dialog --title "User Action Required" --msgbox "VARA FM is not a plug and play mode. You must configure VARA manually." 10 50
+@@ -253,7 +253,7 @@ if [ $exit_status -eq 0 ]; then
+       start_and_wait_for_vara et-vara-fm
+       et-winlink start-vara-fm &
+       sleep 1
+-      min http://localhost:8080 2>/dev/null
++      xdg-open http://localhost:8080 2>/dev/null
+     ;;
+     ${MODE_ID_WINLINK_VARA_HF})
+       dialog --title "User Action Required" --msgbox "VARA HF is not a plug and play mode. You must configure VARA manually." 10 50
+@@ -261,7 +261,7 @@ if [ $exit_status -eq 0 ]; then
+       start_and_wait_for_vara et-vara-hf
+       et-winlink start-vara-hf &
+       sleep 1
+-      min http://localhost:8080 2>/dev/null
++      xdg-open http://localhost:8080 2>/dev/null
+     ;;
+     *)
+       et-log "Mode ${SELECTED_MODE} not yet supported"
+Index: emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-th-d74
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/opt/emcomm-tools/bin/et-th-d74
++++ emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-th-d74
+@@ -300,7 +300,7 @@ EOF
+         "Winlink")
+           do_kiss_attach
+           start_and_wait_for_service et-service-winlink-native-packet
+-          min http://localhost:8080 1>/dev/null 2>&1
++          xdg-open http://localhost:8080 1>/dev/null 2>&1
+           break
+           ;;
+         "YAAC")
+Index: emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-uv-pro
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/opt/emcomm-tools/bin/et-uv-pro
++++ emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-uv-pro
+@@ -289,7 +289,7 @@ EOF
+         "Winlink")
+           do_kiss_attach
+           start_and_wait_for_service et-service-winlink-native-packet
+-          min http://localhost:8080 1>/dev/null 2>&1
++          xdg-open http://localhost:8080 1>/dev/null 2>&1
+           break
+           ;;
+         "YAAC")
+Index: emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-vr-n76
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/opt/emcomm-tools/bin/et-vr-n76
++++ emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-vr-n76
+@@ -290,7 +290,7 @@ EOF
+         "Winlink")
+           do_kiss_attach
+           start_and_wait_for_service et-service-winlink-native-packet
+-          min http://localhost:8080 1>/dev/null 2>&1
++          xdg-open http://localhost:8080 1>/dev/null 2>&1
+           break
+           ;;
+         "YAAC")

@@ -1,0 +1,42 @@
+Recover when ~/.config/emcomm-tools is missing
+
+et-user alread had the means to recover from a missing user.json file.
+If however, for what ever reason, the whole emcomm-tools config folder is missing, it spits out all sorts of errors.
+While the errors would be just a UX issue, it is unable to recover and the system would remain in a broken state.
+The same goes for et-mode.
+
+Recreating the missing folder when missing, mitigates this issue.
+
+This patch has been proposed upstream: https://github.com/thetechprepper/emcomm-tools-os-community/pull/80.
+Index: emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-mode
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/opt/emcomm-tools/bin/et-mode
++++ emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-mode
+@@ -160,6 +160,11 @@ if [ $exit_status -eq 0 ]; then
+ 
+   stop_all_services
+ 
++  [ -z "$MODE_STATUS_FILE_DIR" ] && MODE_STATUS_FILE_DIR="$(dirname ${MODE_STATUS_FILE})"
++  if [ ! -d ${MODE_STATUS_FILE_DIR} ]; then
++    cp -r /etc/skel/.config/emcomm-tools ${MODE_STATUS_FILE_DIR}
++  fi
++
+   echo ${SELECTED_MODE} > ${MODE_STATUS_FILE}
+ 
+   case ${SELECTED_MODE} in
+Index: emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-user
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/opt/emcomm-tools/bin/et-user
++++ emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-user
+@@ -6,6 +6,11 @@
+ # Purpose: Set user-specific settings for EmComm Tools.
+ 
+ [ -z "$ET_USER_CONFIG" ] && ET_USER_CONFIG="${HOME}/.config/emcomm-tools/user.json"
++[ -z "$ET_USER_CONFIG_DIR" ] && ET_USER_CONFIG_DIR="$(dirname ${ET_USER_CONFIG})"
++
++if [ ! -d ${ET_USER_CONFIG_DIR} ]; then
++  cp -r /etc/skel/.config/emcomm-tools ${ET_USER_CONFIG_DIR}
++fi
+ 
+ if [ ! -e ${ET_USER_CONFIG} ]; then
+   cp /etc/skel/.config/emcomm-tools/user.json ${ET_USER_CONFIG}

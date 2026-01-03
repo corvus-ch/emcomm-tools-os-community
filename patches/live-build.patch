@@ -1,0 +1,36 @@
+Switch to live-build
+
+Drop quilt and install tools to build EmComm Tools using live-build.
+Index: emcomm-tools-os-community/source/scripts/install-dev-tools.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-dev-tools.sh
++++ emcomm-tools-os-community/source/scripts/install-dev-tools.sh
+@@ -22,23 +22,18 @@ apt install \
+ 
+ et-log "Installing dev tools for building EmComm Tools packages and general development..."
+ apt install \
++  curl \
+   git \
+   libfuse2 \
++  live-build \
++  make \
+   meld \
++  quilt \
+   rpm \
++  tar \
+   vim \
+   -y
+ 
+-et-log "Installing tools for building custom ISO image..."
+-if ! command -v cubic
+-then
+-  sudo apt-add-repository universe -y
+-  sudo apt-add-repository ppa:cubic-wizard/release -y
+-  sudo apt update
+-  sudo apt install --no-install-recommends cubic -y
+-fi
+-
+-
+ # libyaml-dev - needed for Ruby via rbenv
+ et-log "Installing tools needed for ETC R5"
+ apt install \
