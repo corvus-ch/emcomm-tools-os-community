@@ -3,6 +3,9 @@ recover-missing-dir.patch
 path.patch
 default-browser.patch
 
+# Pending upstream
+group.patch
+
 # Fixes
 apt-sources.patch
 package-names.patch
