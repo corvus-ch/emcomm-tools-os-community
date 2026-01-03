@@ -2,6 +2,16 @@ ET_LB_EXTRA_OPTS ?= ''
 
 all: ectde-image-amd64.hybrid.iso
 
+ectde-image-amd64.hybrid.iso: prepare
+	sudo lb build 2>&1 | tee build.log
+
+.PHONY: prepare
+prepare: config
+prepare: config/apt/preferences
+prepare: config/hooks/normal/6100-install-emcomm-tools.hook.chroot
+prepare: config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot
+prepare: config/package-lists/desktop.list.chroot
+
 config:
 	lb config \
 		--archive-areas 'main non-free-firmware contrib' \
@@ -20,14 +30,14 @@ config:
 		$(ET_LB_EXTRA_OPTS)
 
 .ONESHELL:
-config/package-lists/desktop.list.chroot: config
+config/package-lists/desktop.list.chroot: | config
 	cat <<EOF >$@
 	live-task-gnome
 	epiphany-browser
 	EOF
 
 .ONESHELL:
-config/apt/preferences: config
+config/apt/preferences: | config
 	cat <<EOF >$@
 	Package: live-task-localisation*
 	Pin: version *
@@ -55,7 +65,7 @@ config/apt/preferences: config
 	EOF
 
 .ONESHELL:
-config/hooks/normal/6100-install-emcomm-tools.hook.chroot: config
+config/hooks/normal/6100-install-emcomm-tools.hook.chroot: | config
 	cat <<EOF >$@
 	#!/bin/sh
 	
@@ -78,7 +88,7 @@ config/hooks/normal/6100-install-emcomm-tools.hook.chroot: config
 	chmod +x $@
 
 .ONESHELL:
-config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot: config
+config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot: | config
 	cat <<EOF >$@
 	#!/bin/sh
 	apt purge -y \
@@ -91,14 +101,6 @@ config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot: config
 	apt autopurge -y
 	EOF
 	chmod +x $@
-
-apt: config/apt/preferences
-hooks: config/hooks/normal/6100-install-emcomm-tools.hook.chroot
-hooks: config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot
-packages: config/package-lists/desktop.list.chroot
-
-ectde-image-amd64.hybrid.iso: apt hooks packages
-	sudo lb build 2>&1 | tee build.log
 
 .PHONY: clean
 clean:
