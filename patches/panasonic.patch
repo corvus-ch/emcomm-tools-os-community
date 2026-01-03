@@ -1,0 +1,15 @@
+Drop Panasonic brightness fix
+
+Usin Debian, changing display brightness on Panasonic device works out of the box.
+Index: emcomm-tools-os-community/source/scripts/install.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install.sh
++++ emcomm-tools-os-community/source/scripts/install.sh
+@@ -23,7 +23,6 @@ exitIfNotRoot
+ ./configure-user.sh
+ 
+ ./install-emcomm-tools.sh
+-./fix-panasonic-brightness.sh
+ 
+ ./install-hamlib.sh
+ ./install-js8call.sh
