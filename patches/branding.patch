@@ -31,3 +31,17 @@ Index: emcomm-tools-os-community/source/scripts/install.sh
  
  ./configure-gnome.sh
  ./configure-user.sh
+Index: emcomm-tools-os-community/source/scripts/install-base.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-base.sh
++++ emcomm-tools-os-community/source/scripts/install-base.sh
+@@ -10,9 +10,6 @@ et-log "Installing environment variables
+ cp -v ../overlay/etc/environment /etc/
+ cp -v ../overlay/etc/profile.d/emcomm-tools.sh /etc/profile.d/
+ 
+-et-log "Installing message of the day..."
+-cp -v ../overlay/etc/motd /etc/
+-
+ et-log "Installing base packages..."
+ 
+ apt install \
