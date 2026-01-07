@@ -18,6 +18,7 @@ mbutil.patch
 branding.patch
 
 # Improvements/clean-ups
+no-dialog.patch
 gsettings.patch
 panasonic.patch
 pup.patch

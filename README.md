@@ -53,6 +53,29 @@ make
 
 ### Customize your build
 
+#### Map selection
+
+The EmComm tools installation scripts, show dialogs where you can choose the maps to be included.
+Using environment variables, one can preset the answers to those dialogs.
+
+```sh
+# Supported values are:
+# * `us`: United States of America, ``
+# * `ca`: Canada
+# * `world`: whole globe but with less zoom levels.
+export ET_MAP_SELECTION=world
+```
+
+```sh
+# Any `.osm.pdf` URL from https://download.geofabrik.de.
+# WARNING: Keep an eye on the size. Those files can become very huge very quick.
+# The example below is 5.6 GB!
+export ET_OSM_URL=https://download.geofabrik.de/europe/dach-latest.osm.pbf
+# 5.6 GB!
+```
+
+#### Other customizations
+
 The ISO images are built using [live-build](https://live-team.pages.debian.net/live-manual/).
 Alter the generated configuration by placing files in the `overrides` directory.
 The inner structure `overrides` is the same as that of `config`.

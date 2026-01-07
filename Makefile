@@ -90,6 +90,9 @@ config/hooks/normal/6100-install-emcomm-tools.hook.chroot: | config
 
 	set -e
 
+	export ET_MAP_SELECTION=$(ET_MAP_SELECTION)
+	export ET_OSM_URL=$(ET_OSM_URL)
+
 	cd /tmp/source/scripts
 	./install.sh
 	
