@@ -18,6 +18,7 @@ mbutil.patch
 branding.patch
 
 # Improvements/clean-ups
+gsettings.patch
 panasonic.patch
 pup.patch
 hamlib.patch
