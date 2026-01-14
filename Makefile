@@ -4,6 +4,10 @@ UPSTREAM_VERSION ?= 20251128-r5-final-5.0.0
 .PHONY: all
 all: live-image-amd64.hybrid.iso
 
+.PHONY: run
+run: live-image-amd64.hybrid.iso
+	kvm -cdrom $< -smp cpus=4 -cpu host -m 4G -vga qxl
+
 live-image-amd64.hybrid.iso: | prepare
 	sudo lb build 2>&1 | tee build.log
 
@@ -14,6 +18,7 @@ prepare: config/hooks/normal/6100-install-emcomm-tools.hook.chroot
 prepare: config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot
 prepare: config/includes.chroot_before_packages/tmp/source
 prepare: config/package-lists/desktop.list.chroot
+prepare: config/package-lists/testing.list.chroot
 
 ifneq (,$(wildcard overrides))
 OVERRIDE_FILES=$(shell find overrides -type f -exec bash -c 'echo "{}" | sed -e "s/\(\s\)/\\\\\\1/g"' \;)
@@ -55,6 +60,14 @@ config/package-lists/desktop.list.chroot: | config
 	cat <<EOF >$@
 	live-task-gnome
 	epiphany-browser
+	EOF
+
+# Packages used to test EmComm Tools within a virtual machine.
+.ONESHELL:
+config/package-lists/testing.list.chroot: | config
+	cat <<EOF >$@
+	# Enables automatic resolution adjustment and clipboard integration with the host.
+	spice-vdagent
 	EOF
 
 .ONESHELL:

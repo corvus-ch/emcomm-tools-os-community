@@ -95,3 +95,21 @@ Add VARA from backup created on an install of EmComm Tools:
 mkdir -p overrides/includes.chroot_after_packages/etc/skel
 tar x -C overrides/includes.chroot_after_packages/etc/skel -f etc-wine-backup*.tar.gz
 ```
+
+#### Your build
+
+Ensure you have the following dependencies installed:
+
+* `qemu-kvm`
+* `qemu-utils`
+
+```sh
+make run
+```
+
+This starts the EmComm Tools image in a virtual machine.
+
+> [!NOTE]
+> Running the installer does not work.
+> The virtual machine does not have access to any disks.
+> But EmComm tools runs completely fine within the live environment.
