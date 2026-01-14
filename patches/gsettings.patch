@@ -1,6 +1,9 @@
 Adapt gsettings
 
 Bring gsettings in line with the context of Debian.
+
+* Prevent calamares installer from overriding EmComm Tools app favourites.
+* Add Debian specific app favourites
 Index: emcomm-tools-os-community/source/overlay/etc/skel/.bashrc
 ===================================================================
 --- emcomm-tools-os-community.orig/source/overlay/etc/skel/.bashrc
@@ -15,13 +18,91 @@ Index: emcomm-tools-os-community/source/overlay/etc/skel/.bashrc
 Index: emcomm-tools-os-community/source/overlay/usr/share/glib-2.0/schemas/90_ubuntu-settings.gschema.override
 ===================================================================
 --- emcomm-tools-os-community.orig/source/overlay/usr/share/glib-2.0/schemas/90_ubuntu-settings.gschema.override
-+++ emcomm-tools-os-community/source/overlay/usr/share/glib-2.0/schemas/90_ubuntu-settings.gschema.override
-@@ -8,7 +8,7 @@ no-show-notifications = true
- show-desktop-icons = false
- 
- [org.gnome.shell]
++++ /dev/null
+@@ -1,34 +0,0 @@
+-[apps/update-manager]
+-first-run = false
+-
+-[com/ubuntu/update-notifier]
+-no-show-notifications = true
+-
+-[org.gnome.desktop.background]
+-show-desktop-icons = false
+-
+-[org.gnome.shell]
 -favorite-apps = ['emcomm-tools.desktop', 'js8call.desktop', 'fldigi.desktop', 'et-predict-app.desktop', 'et-aircraft.desktop', 'org.gnome.Terminal.desktop', 'navit.desktop', 'min.desktop', 'org.gnome.Nautilus.desktop']
-+favorite-apps = ['emcomm-tools.desktop', 'js8call.desktop', 'fldigi.desktop', 'et-predict-app.desktop', 'et-aircraft.desktop', 'org.gnome.Console.desktop', 'navit.desktop', 'org.gnome.Epiphany.desktop', 'org.gnome.Nautilus.desktop']
- last-selected-power-profile = 'performance'
+-last-selected-power-profile = 'performance'
+-
+-[org.gnome.system.location]
+-enabled = false
+-
+-[org.gnome.desktop.session]
+-idle-delay = 0
+-
+-[org.gnome.desktop.interface]
+-text-scaling-factor = 1.25
+-enable-animations = false
+-show-battery-percentage = true
+-
+-[org.gnome.desktop.a11y.applications]
+-screen-keyboard-enabled = true
+-
+-[org.gnome.desktop.interface]
+-toolkit-accessibility = true
+-
+-[org.gnome.settings-daemon.plugins.power]
+-sleep-inactive-ac-type = 'nothing'
+-sleep-inactive-battery-type = 'nothing'
+-power-saver-profile-on-low-battery = false
+Index: emcomm-tools-os-community/source/overlay/usr/share/glib-2.0/schemas/99-emcomm-tools.gschema.override
+===================================================================
+--- /dev/null
++++ emcomm-tools-os-community/source/overlay/usr/share/glib-2.0/schemas/99-emcomm-tools.gschema.override
+@@ -0,0 +1,34 @@
++[apps/update-manager]
++first-run = false
++
++[com/ubuntu/update-notifier]
++no-show-notifications = true
++
++[org.gnome.desktop.background]
++show-desktop-icons = false
++
++[org.gnome.shell]
++favorite-apps = ['calamares-install-debian.desktop', 'emcomm-tools.desktop', 'js8call.desktop', 'fldigi.desktop', 'et-predict-app.desktop', 'et-aircraft.desktop', 'org.gnome.Terminal.desktop', 'navit.desktop', 'min.desktop', 'org.gnome.Nautilus.desktop']
++last-selected-power-profile = 'performance'
++
++[org.gnome.system.location]
++enabled = false
++
++[org.gnome.desktop.session]
++idle-delay = 0
++
++[org.gnome.desktop.interface]
++text-scaling-factor = 1.25
++enable-animations = false
++show-battery-percentage = true
++
++[org.gnome.desktop.a11y.applications]
++screen-keyboard-enabled = true
++
++[org.gnome.desktop.interface]
++toolkit-accessibility = true
++
++[org.gnome.settings-daemon.plugins.power]
++sleep-inactive-ac-type = 'nothing'
++sleep-inactive-battery-type = 'nothing'
++power-saver-profile-on-low-battery = false
+Index: emcomm-tools-os-community/source/scripts/configure-gnome.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/configure-gnome.sh
++++ emcomm-tools-os-community/source/scripts/configure-gnome.sh
+@@ -7,7 +7,7 @@
  
- [org.gnome.system.location]
+ et-log "Configuring GNOME..."
+ 
+-cp ../overlay/usr/share/glib-2.0/schemas/90_ubuntu-settings.gschema.override \
++cp ../overlay/usr/share/glib-2.0/schemas/* \
+   /usr/share/glib-2.0/schemas/
+ 
+ cp ../overlay/usr/share/icons/*.png \
