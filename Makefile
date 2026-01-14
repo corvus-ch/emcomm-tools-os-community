@@ -1,9 +1,10 @@
 ET_LB_EXTRA_OPTS ?= ''
 UPSTREAM_VERSION ?= 20251128-r5-final-5.0.0
 
-all: ectde-image-amd64.hybrid.iso
+.PHONY: all
+all: live-image-amd64.hybrid.iso
 
-ectde-image-amd64.hybrid.iso: prepare
+live-image-amd64.hybrid.iso: | prepare
 	sudo lb build 2>&1 | tee build.log
 
 .PHONY: prepare
@@ -15,8 +16,9 @@ prepare: config/includes.chroot_before_packages/tmp/source
 prepare: config/package-lists/desktop.list.chroot
 
 ifneq (,$(wildcard overrides))
-prepare: overrides | config
-	cp -RT $< config
+OVERRIDE_FILES=$(shell find overrides -type f -exec bash -c 'echo "{}" | sed -e "s/\(\s\)/\\\\\\1/g"' \;)
+CONFIG_FILES=$(patsubst overrides/%, config/%, $(OVERRIDE_FILES))
+prepare: $(CONFIG_FILES) | config
 endif
 
 emcomm-tools-os-community-$(UPSTREAM_VERSION).tar.gz:
@@ -115,6 +117,10 @@ config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot: | config
 	apt autopurge -y
 	EOF
 	chmod +x $@
+
+config/%: overrides/% | config
+	mkdir -p '$(shell dirname "$@")'
+	cp "$<" "$@"
 
 .PHONY: clean
 clean:
