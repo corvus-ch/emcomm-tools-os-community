@@ -74,6 +74,8 @@ export ET_OSM_URL=https://download.geofabrik.de/europe/dach-latest.osm.pbf
 # 5.6 GB!
 ```
 
+If set to empty (`export ET_OSM_URL=`), downloading the map will be skipped.
+
 #### Other customizations
 
 The ISO images are built using [live-build](https://live-team.pages.debian.net/live-manual/).

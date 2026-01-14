@@ -10,7 +10,7 @@ Index: emcomm-tools-os-community/source/scripts/download-et-maps.sh
 -# Show dialog
 -SELECTED_COUNTRY=$(dialog --clear --menu "Select a country" 10 40 5 "${OPTIONS[@]}" 2>&1 >/dev/tty)
 -EXIT_STATUS=$?
-+if [ -z "$ET_MAP_SELECTION" ]; then
++if [ -z ${ET_MAP_SELECTION+x} ]; then
 +  # Show dialog
 +  SELECTED_COUNTRY=$(dialog --clear --menu "Select a country" 10 40 5 "${OPTIONS[@]}" 2>&1 >/dev/tty)
 +  EXIT_STATUS=$?
@@ -39,7 +39,7 @@ Index: emcomm-tools-os-community/source/scripts/download-osm-maps.sh
 -  if [ $? -ne 0 ]; then
 -    et-log "Can't download list map data from ${URL}. Exiting..."
 -    exit 1
-+if [[ -z $ET_OSM_URL ]]; then
++if [[ -z ${ET_OSM_URL+x} ]]; then
 +  if [ ! -e ${HTML} ]; then
 +    et-log "Downloading list of maps files for the US..."
 +    curl -s -L -f -o ${HTML} ${URL}
