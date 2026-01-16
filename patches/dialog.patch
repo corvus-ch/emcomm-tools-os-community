@@ -1,0 +1,191 @@
+Keep shell history after using dialog
+
+Use dialogs' `--erase-on-exit` and `--stdout` options.
+The use of `tput sgr && clear` clears the shell scroll hisotry.
+This prevents users to scroll back and see what happened before the call to dialog.
+
+Proposed upstream in https://github.com/thetechprepper/emcomm-tools-os-community/pull/85.
+Index: emcomm-tools-os-community/source/scripts/download-et-maps.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/download-et-maps.sh
++++ emcomm-tools-os-community/source/scripts/download-et-maps.sh
+@@ -25,10 +25,8 @@ FILES=(
+ 
+ if [ -z ${ET_MAP_SELECTION+x} ]; then
+   # Show dialog
+-  SELECTED_COUNTRY=$(dialog --clear --menu "Select a country" 10 40 5 "${OPTIONS[@]}" 2>&1 >/dev/tty)
++  SELECTED_COUNTRY=$(dialog --erase-on-exit --stdout --menu "Select a country" 10 40 5 "${OPTIONS[@]}")
+   EXIT_STATUS=$?
+-
+-  tput sgr0 && clear
+ else
+   SELECTED_COUNTRY=$ET_MAP_SELECTION
+   EXIT_STATUS=0
+Index: emcomm-tools-os-community/source/scripts/download-osm-maps.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/download-osm-maps.sh
++++ emcomm-tools-os-community/source/scripts/download-osm-maps.sh
+@@ -36,12 +36,10 @@ if [[ -z ${ET_OSM_URL+x} ]]; then
+       options+=("$state_name" "$state_url")
+   done < <(grep "[.]pbf" page.html | grep 'href="us/' | sort)
+  
+-  SELECTED_STATE=$(dialog --clear --menu "Select a map file:" 20 80 10 "${options[@]}" 3>&1 1>&2 2>&3)
++  SELECTED_STATE=$(dialog --erase-on-exit --stdout --menu "Select a map file:" 20 80 10 "${options[@]}")
+   if [ $? -eq 0 ]; then
+     download_url="https://download.geofabrik.de/north-america/us/${SELECTED_STATE}-latest.osm.pbf"
+   fi
+-
+-  tput sgr 0 && clear
+ else
+   download_url=$ET_OSM_URL
+ fi
+Index: emcomm-tools-os-community/source/scripts/download-wikipedia.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/download-wikipedia.sh
++++ emcomm-tools-os-community/source/scripts/download-wikipedia.sh
+@@ -29,12 +29,9 @@ while IFS= read -r zim_files; do
+     options+=("$zim_file" "")
+ done < <(grep "[.]zim" kiwix.html | grep "wikipedia_en" kiwix.html | grep nopic | grep -E "computer|history|mathematics|medicine|simple" | sort)
+ 
+-#selected_file=$(dialog --clear --menu "Select a Wikipedia file:" 20 80 10 "${options[@]}" 3>&1 1>&2 2>&3)
+-selected_file=$(dialog --clear --menu "Select a Wikipedia file:" 20 80 10 "${options[@]}" 3>&1 1>&2 2>&3)
++selected_file=$(dialog --erase-on-exit --stdout --menu "Select a Wikipedia file:" 20 80 10 "${options[@]}")
+ exit_status=$?
+ 
+-tput sgr 0 && clear
+-
+ download_url="${URL}/${selected_file}"
+ et-log "Downloading ${download_url}..."
+ curl -L -f -O ${download_url} && mv ${selected_file} ${ZIM_DIR}
+Index: emcomm-tools-os-community/source/scripts/install-wine.sh
+===================================================================
+--- emcomm-tools-os-community.orig/source/scripts/install-wine.sh
++++ emcomm-tools-os-community/source/scripts/install-wine.sh
+@@ -29,6 +29,5 @@ apt install \
+ 
+ # Only show the directions for including WINE in the image to advanced users
+ if [[ ! -z "${ET_EXPERT}" ]]; then
+-  dialog --textbox wine.txt 15 74
+-  tput sgr 0 && clear
++  dialog --erase-on-exit --stdout --textbox wine.txt 15 74
+ fi
+Index: emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-common
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/opt/emcomm-tools/bin/et-common
++++ emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-common
+@@ -22,6 +22,11 @@ export WHITE="${ESC}[97m"
+ export YELLOW="${ESC}[1;33m"
+ export NC="${ESC}[0m"
+ 
++# Display an interactive dialog
++show-dialog() {
++  dialog --erase-on-exit --stdout "$@"
++}
++
+ # Display an error message in the terminal
+ show-err-dialog() {
+   local message="$1"
+Index: emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-mode
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/opt/emcomm-tools/bin/et-mode
++++ emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-mode
+@@ -4,6 +4,7 @@
+ # Date     : 6 November 2024
+ # Updated  : 25 March 2025
+ # Purpose  : Configures the system for a specific mode of operation
++source /opt/emcomm-tools/bin/et-common
+ 
+ # Use a simple text file to save the state of the last mode selected
+ MODE_STATUS_FILE="${HOME}/.config/emcomm-tools/et-mode"
+@@ -113,15 +114,13 @@ select_term_mode () {
+     fi
+   fi
+ 
+-  TERM_MODE=$(dialog --clear --menu "Select a modem" 13 60 10 "${term_mode[@]}" 3>&1 1>&2 2>&3)
++  TERM_MODE=$(show-dialog --menu "Select a modem" 13 60 10 "${term_mode[@]}")
+   exit_status=$?
+ 
+   if [ "${TERM_MODE}" == "9600" ]; then
+-    dialog --title "Note on 9600 Baud" --msgbox "9600 baud is only supported on limited radios and typically requires a special cable.\n\nDon't forget to set the packet settings to 9600 on the radio." 0 0
++    show-dialog --title "Note on 9600 Baud" --msgbox "9600 baud is only supported on limited radios and typically requires a special cable.\n\nDon't forget to set the packet settings to 9600 on the radio." 0 0
+   fi 
+ 
+-  tput sgr 0 && clear
+-
+   if [ ${exit_status} -ne 0 ]; then
+     et-log "No modem selected. Mode will not be started."
+     exit 1
+@@ -151,11 +150,9 @@ if [ -e "${HOME}/.wine32/drive_c/VARA/VA
+ fi
+ 
+ # Prompt user for option and save exit status
+-SELECTED_MODE=$(dialog --clear --menu "Select a mode:" 18 65 10 "${options[@]}" 3>&1 1>&2 2>&3)
++SELECTED_MODE=$(show-dialog --menu "Select a mode:" 18 65 10 "${options[@]}")
+ exit_status=$?
+ 
+-tput sgr 0 && clear
+-
+ if [ $exit_status -eq 0 ]; then
+ 
+   stop_all_services
+@@ -253,16 +250,14 @@ if [ $exit_status -eq 0 ]; then
+       xdg-open http://localhost:8080
+     ;;
+     ${MODE_ID_WINLINK_VARA_FM})
+-      dialog --title "User Action Required" --msgbox "VARA FM is not a plug and play mode. You must configure VARA manually." 10 50
+-      tput sgr 0 && clear
++      show-dialog --title "User Action Required" --msgbox "VARA FM is not a plug and play mode. You must configure VARA manually." 10 50
+       start_and_wait_for_vara et-vara-fm
+       et-winlink start-vara-fm &
+       sleep 1
+       xdg-open http://localhost:8080 2>/dev/null
+     ;;
+     ${MODE_ID_WINLINK_VARA_HF})
+-      dialog --title "User Action Required" --msgbox "VARA HF is not a plug and play mode. You must configure VARA manually." 10 50
+-      tput sgr 0 && clear
++      show-dialog --title "User Action Required" --msgbox "VARA HF is not a plug and play mode. You must configure VARA manually." 10 50
+       start_and_wait_for_vara et-vara-hf
+       et-winlink start-vara-hf &
+       sleep 1
+Index: emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-radio
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/opt/emcomm-tools/bin/et-radio
++++ emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-radio
+@@ -20,11 +20,9 @@ while IFS= read -r radio; do
+     options+=("$ID" "$VENDOR $MODEL")
+ done < <(find $ET_HOME/conf/radios.d -type f -name \*.json | grep -v "bt.json" | sort)
+ 
+-SELECTED_RADIO=$(dialog --clear --menu "Select a radio:" 21 60 10 "${options[@]}" 3>&1 1>&2 2>&3)
++SELECTED_RADIO=$(show-dialog --menu "Select a radio:" 21 60 10 "${options[@]}")
+ exit_status=$?
+ 
+-tput sgr 0 && clear
+-
+ if [ $exit_status -eq 0 ]; then
+ 
+   # Special case to run without a radio configured
+Index: emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-user-restore
+===================================================================
+--- emcomm-tools-os-community.orig/source/overlay/opt/emcomm-tools/bin/et-user-restore
++++ emcomm-tools-os-community/source/overlay/opt/emcomm-tools/bin/et-user-restore
+@@ -3,6 +3,7 @@
+ # Date    : 15 January 2025
+ # Updated : 17 January 2025
+ # Purpose : Restore backup to user's home directory.
++source /opt/emcomm-tools/bin/et-common
+ 
+ BACKUP_FILE_PATTERN="etc-user-backup-*.tar.gz"
+ USB_MEDIA_MOUNT=/media
+@@ -24,11 +25,9 @@ if [ $? -eq 0 ]; then
+   done < <(find ${USB_MEDIA_MOUNT} -type f -name ${BACKUP_FILE_PATTERN} 2> /dev/null)
+ fi
+ 
+-selected_file=$(dialog --clear --menu "Select a backup to restore" 20 80 10 "${options[@]}" 3>&1 1>&2 2>&3)
++selected_file=$(show-dialog --menu "Select a backup to restore" 20 80 10 "${options[@]}")
+ exit_status=$?
+ 
+-tput sgr 0 && clear
+-
+ [ ${exit_status} -ne 0 ] && echo "No backup selected. Exiting." && exit 1
+ 
+ [ ! -e "${selected_file}" ] && echo "File ${selected_file} does not exist. Exiting." 
