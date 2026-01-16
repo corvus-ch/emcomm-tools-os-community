@@ -94,7 +94,7 @@ Index: emcomm-tools-os-community/source/scripts/download-osm-maps.sh
 -if [ $exit_status -eq 0 ]; then
 -  download_file="${SELECTED_STATE}-latest.osm.pbf"
 -  download_url="https://download.geofabrik.de/north-america/us/${download_file}"
-+if [ ! -z download_url ]; then
++if [ ! -z $download_url ]; then
 +  download_file="$(basename $download_url)"
  
    if [ -e ${download_file} ]; then
