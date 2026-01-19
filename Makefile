@@ -53,7 +53,7 @@ config:
 		--security true \
 		--source false \
 		--updates true \
-		$(ET_LB_EXTRA_OPTS)
+		$(LB_EXTRA_OPTS)
 
 .ONESHELL:
 config/package-lists/desktop.list.chroot: | config
@@ -102,12 +102,11 @@ config/apt/preferences: | config
 config/hooks/normal/6100-install-emcomm-tools.hook.chroot: | config
 	cat <<EOF >$@
 	#!/bin/sh
-
+	
 	set -e
-
-	export ET_MAP_SELECTION=$(ET_MAP_SELECTION)
-	export ET_OSM_URL=$(ET_OSM_URL)
-
+	
+	$$(env | grep ET_ | sed 's/^\(.*\)/export \1\r/g')
+	
 	cd /tmp/source/scripts
 	./install.sh
 	
