@@ -16,8 +16,11 @@ prepare: config
 prepare: config/apt/preferences
 prepare: config/hooks/normal/6100-install-emcomm-tools.hook.chroot
 prepare: config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot
+prepare: config/includes.chroot_after_packages/etc/calamares/modules/packagechooser.conf
+prepare: config/includes.chroot_after_packages/etc/calamares/settings.conf
 prepare: config/includes.chroot_before_packages/tmp/source
 prepare: config/package-lists/desktop.list.chroot
+prepare: config/package-lists/optional.list.binary
 prepare: config/package-lists/testing.list.chroot
 
 ifneq (,$(wildcard overrides))
@@ -129,6 +132,17 @@ config/hooks/normal/7900-remove-unused-gnome-packages.hook.chroot: | config
 	apt autopurge -y
 	EOF
 	chmod +x $@
+
+config/package-lists/optional.list.binary: packagechooser/optional.list.binary | config
+	cp "$<" "$@"
+
+config/includes.chroot_after_packages/etc/calamares/settings.conf: packagechooser/settings.conf | config
+	mkdir -p '$(shell dirname "$@")'
+	cp "$<" "$@"
+
+config/includes.chroot_after_packages/etc/calamares/modules/packagechooser.conf: packagechooser/packagechooser.conf | config
+	mkdir -p '$(shell dirname "$@")'
+	cp "$<" "$@"
 
 config/%: overrides/% | config
 	mkdir -p '$(shell dirname "$@")'
